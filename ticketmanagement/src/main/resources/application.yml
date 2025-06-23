@@ -22,7 +22,20 @@ spring:
     jackson:
       serialization:
         write-dates-as-timestamps: false
-
+  cache:
+    type: redis
+  cloud:
+    gateway:
+      routes:
+        - id: ticket-service
+          uri: http://localhost:8080
+          predicates:
+            - Path=/api/tickets/**
+          filters:
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 10
+                redis-rate-limiter.burstCapacity: 20
 logging:
   level:
     org.hibernate.SQL: debug
@@ -30,3 +43,5 @@ logging:
 jwt:
   secret: Xh4UwlXcS59K9VvH8rELUYHd6Bbq3YxzWipT0lsUxaQdzV6KmVZVjN+T9GiH6aRkQGHJNLN4DY4piJK2Nq0txQ==
   expiration: 3600000
+
+

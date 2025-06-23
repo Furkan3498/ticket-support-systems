@@ -1,6 +1,7 @@
 package com.furkanceylan.ticketmanagement.controller;
 import com.furkanceylan.ticketmanagement.dto.TicketRequestDto;
 import com.furkanceylan.ticketmanagement.dto.TicketResponseDto;
+import com.furkanceylan.ticketmanagement.dto.UpdateTicketStatusRequest;
 import com.furkanceylan.ticketmanagement.entity.TicketStatus;
 import com.furkanceylan.ticketmanagement.service.TicketService;
 import java.security.Principal;
@@ -48,7 +49,12 @@ public class TicketController {
 
   @PostMapping("/admin/{id}/status")
   @PreAuthorize("hasRole('ADMIN')")
-  public ResponseEntity<TicketResponseDto> updateTicketStatus(@PathVariable Long id, @RequestBody String status) {
-    return ResponseEntity.ok(ticketService.updateTicketStatus(id, status));
+  public ResponseEntity<TicketResponseDto> updateTicketStatus(
+          @PathVariable Long id,
+          @RequestBody UpdateTicketStatusRequest request
+  ) {
+    return ResponseEntity.ok(ticketService.updateTicketStatus(id, request.getStatus()));
   }
+
+
 }

@@ -13,6 +13,7 @@ import com.furkanceylan.ticketmanagement.repository.UserRepository;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -35,7 +36,7 @@ public class TicketService {
     return ticketRepository.findByCreatedBy(user).stream()
         .map(ticketMapper::toDto).toList();
   }
-
+  @Cacheable(value = "tickets", key = "#status")
   public List<TicketResponseDto> getTicketsByStatus(TicketStatus status) {
     return ticketRepository.findByStatus(status).stream()
         .map(ticketMapper::toDto).toList();
@@ -53,7 +54,7 @@ public class TicketService {
     ticket.setStatus(TicketStatus.ANSWERED);
     return ticketMapper.toDto(ticketRepository.save(ticket));
   }
-
+  @Cacheable(value = "tickets", key = "#updatestatus")
   public TicketResponseDto updateTicketStatus(Long id, String status) {
     Ticket ticket = ticketRepository.findById(id)
         .orElseThrow(() -> new ResourceNotFoundException("Ticket not found"));
